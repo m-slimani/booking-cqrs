@@ -6,4 +6,6 @@ public interface BookingStore {
 
   Booking save(Booking booking);
 
+  void cancel(Booking booking);
+
 }

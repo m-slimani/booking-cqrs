@@ -7,11 +7,11 @@ public class Booking {
   private Long bookingId;
   private Integer organiserNumber;
   private String roomNumber;
-  private Integer slotNumber;
+  private Long slotNumber;
   private List<String> participants;
 
 
-  public Booking(Long bookingId, Integer organiserNumber, String roomNumber, Integer slotNumber,
+  public Booking(Long bookingId, Integer organiserNumber, String roomNumber, Long slotNumber,
       List<String> participants) {
     this.bookingId = bookingId;
     this.organiserNumber = organiserNumber;
@@ -28,7 +28,7 @@ public class Booking {
     return roomNumber;
   }
 
-  public Integer getSlotNumber() {
+  public Long getSlotNumber() {
     return slotNumber;
   }
 

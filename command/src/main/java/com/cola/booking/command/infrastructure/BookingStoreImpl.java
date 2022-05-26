@@ -14,4 +14,9 @@ public class BookingStoreImpl implements BookingStore {
     return null;
   }
 
+  @Override
+  public void cancel(Booking booking) {
+
+  }
+
 }

@@ -56,7 +56,20 @@ public class BookingIntegrationTest {
   }
 
   @Test
-  @DisplayName("3) cancel booking should cancel and return success status")
+  @DisplayName("3) save existing booking should return exception")
+  void saveExistingBooking() throws Exception {
+
+    bookingRepository.save(buildEntity());
+
+    BookingR requestBody = buildBookingR();
+
+    MvcResult result = post("/bookings", requestBody);
+
+    Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
+  @DisplayName("4) cancel booking should cancel and return success status")
   void cancelBooking() throws Exception {
 
     bookingRepository.save(buildEntity());

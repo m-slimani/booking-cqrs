@@ -4,7 +4,9 @@ import static com.cola.booking.command.infrastructure.booking.BookingEntityMappe
 
 import com.cola.booking.command.domain.Booking;
 import com.cola.booking.command.domain.event.BookingEvent;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -28,6 +30,13 @@ public class BookingStoreImpl implements BookingStore {
     } else {
       throw new NotFoundException();
     }
+  }
+
+  @Override
+  public List<Booking> findByRoomNumberAndSlotNumber(String roomNumber, Long slotNumber) {
+    return bookingRepository.findByRoomNumberAndSlotNumber(roomNumber, slotNumber)
+        .stream().map(bookingEntity -> INSTANCE.fromEntity(bookingEntity))
+        .collect(Collectors.toList());
   }
 
   @Override

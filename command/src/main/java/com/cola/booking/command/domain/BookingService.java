@@ -4,6 +4,7 @@ import com.cola.booking.command.domain.event.BookingCanceledEvent;
 import com.cola.booking.command.domain.event.BookingCreatedEvent;
 import com.cola.booking.command.domain.event.BookingEvent;
 import com.cola.booking.command.infrastructure.booking.BookingStore;
+import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
@@ -33,10 +34,17 @@ public class BookingService {
     if (Objects.isNull(booking.getSlotNumber())) {
       throw new FunctionalException("slotNumber is mandatory");
     }
-    Booking created = bookingStore.save(booking);
-    BookingEvent bookingCreatedEvent = new BookingCreatedEvent(created);
-    bookingStore.sendNotificationEvent(bookingCreatedEvent);
-    return created;
+    List<Booking> existing = bookingStore.findByRoomNumberAndSlotNumber(booking.getRoomNumber(), booking.getSlotNumber());
+
+    if (existing.isEmpty()) {
+      Booking created = bookingStore.save(booking);
+      BookingEvent bookingCreatedEvent = new BookingCreatedEvent(created);
+      bookingStore.sendNotificationEvent(bookingCreatedEvent);
+      return created;
+    } else {
+      throw new FunctionalException("Slot already booked");
+    }
+
 
   }
 

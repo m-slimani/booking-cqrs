@@ -15,7 +15,6 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-<!--        <version>5.1.0</version>-->
         <executions>
           <execution>
             <goals>

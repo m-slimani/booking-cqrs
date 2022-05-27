@@ -15,12 +15,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BookingIntegrationTest {
 
   @Autowired
@@ -74,7 +77,7 @@ public class BookingIntegrationTest {
 
     bookingRepository.save(buildEntity());
 
-    MvcResult result = delete("/bookings/{id}", 1L);
+    MvcResult result = delete("/bookings/{bookingId}", 1L);
 
     Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(204);
     Assertions.assertThat(result.getResponse().getContentAsString()).isEqualTo("Booking canceled");
@@ -123,5 +126,4 @@ public class BookingIntegrationTest {
     bookingR.setParticipants(Arrays.asList("John", "Marc"));
     return bookingR;
   }
-
 }

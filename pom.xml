@@ -22,7 +22,7 @@
     <java.version>11</java.version>
     <openapi-generator.version>5.1.0</openapi-generator.version>
     <jackson-databind.version>0.2.1</jackson-databind.version>
-    <springfox.version>2.9.2</springfox.version>
+    <springfox.version>3.0.0</springfox.version>
     <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
   </properties>
   <dependencies>
@@ -75,15 +75,10 @@
       <artifactId>jackson-databind-nullable</artifactId>
       <version>${jackson-databind.version}</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>io.springfox</groupId>-->
-<!--      <artifactId>springfox-swagger2</artifactId>-->
-<!--      <version>${springfox.version}</version>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-ui</artifactId>
-<!--      <version>1.2.32</version>-->
+      <version>1.6.8</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -137,7 +132,6 @@
               <artifactId>lombok</artifactId>
               <version>${lombok.version}</version>
             </path>
-            <!-- other annotation processors -->
           </annotationProcessorPaths>
 
         </configuration>

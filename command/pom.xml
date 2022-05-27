@@ -3,12 +3,43 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>bookingService</artifactId>
+    <artifactId>booking</artifactId>
     <groupId>com.cola</groupId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>commands</artifactId>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.openapitools</groupId>
+        <artifactId>openapi-generator-maven-plugin</artifactId>
+<!--        <version>5.1.0</version>-->
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>
+                ${project.basedir}/src/main/resources/bookingCommandApi.yaml
+              </inputSpec>
+              <generatorName>spring</generatorName>
+              <apiPackage>com.cola.booking.command.application.api</apiPackage>
+              <modelPackage>com.cola.booking.command.application.model</modelPackage>
+              <supportingFilesToGenerate>
+                ApiUtil.java
+              </supportingFilesToGenerate>
+              <configOptions>
+                <delegatePattern>true</delegatePattern>
+                <interfaceOnly>true</interfaceOnly>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

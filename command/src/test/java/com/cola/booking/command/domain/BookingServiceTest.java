@@ -1,13 +1,18 @@
 package com.cola.booking.command.domain;
 
+import static com.cola.booking.command.domain.BookingStatusEnum.BOOKED_STATUS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.cola.booking.command.infrastructure.BookingStore;
-import com.cola.booking.command.infrastructure.BookingStoreImpl;
-import com.cola.booking.command.infrastructure.SlotStore;
-import com.cola.booking.command.infrastructure.SlotStoreImpl;
+import com.cola.booking.command.domain.event.BookingCanceledEvent;
+import com.cola.booking.command.domain.event.BookingEvent;
+import com.cola.booking.command.infrastructure.booking.BookingStore;
+import com.cola.booking.command.infrastructure.booking.BookingStoreImpl;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class BookingServiceTest {
@@ -25,21 +30,17 @@ public class BookingServiceTest {
   private BookingService bookingService;
 
   private BookingStore bookingStore;
-  private SlotStore slotStore;
 
   @BeforeEach
   void setUp() {
     bookingStore = mock(BookingStoreImpl.class);
-    slotStore = mock(SlotStoreImpl.class);
-    bookingService = new BookingService(bookingStore, slotStore);
+    bookingService = new BookingService(bookingStore);
   }
 
   @Test
   @DisplayName("1) null booking should throw exception")
   void nullBookingShouldReturnException() {
-    assertThatThrownBy(() -> {
-      bookingService.save(null);
-    }).isInstanceOf(FunctionalException.class)
+    assertThatThrownBy(() -> bookingService.save(null)).isInstanceOf(FunctionalException.class)
         .hasMessageContaining("booking is mandatory");
   }
 
@@ -47,7 +48,7 @@ public class BookingServiceTest {
   @DisplayName("2) null organiser number should throw exception")
   void noOrganiserNumberShouldReturnException() {
     assertThatThrownBy(() -> {
-      Booking booking = new Booking(null, null, "C01", 1L, new ArrayList<>());
+      Booking booking = new Booking(null, null, "C01", 1L, new ArrayList<>(), BOOKED_STATUS.getValue());
       bookingService.save(booking);
     }).isInstanceOf(FunctionalException.class)
         .hasMessageContaining("organiserNumber is mandatory");
@@ -58,7 +59,7 @@ public class BookingServiceTest {
   @MethodSource("blankOrNullStrings")
   void noRoomNumberShouldReturnException(String roomNumber) {
     assertThatThrownBy(() -> {
-      Booking booking = new Booking(null, 1, roomNumber, 1L, new ArrayList<>());
+      Booking booking = new Booking(null, 1L, roomNumber, 1L, new ArrayList<>(), BOOKED_STATUS.getValue());
       bookingService.save(booking);
     }).isInstanceOf(FunctionalException.class)
         .hasMessageContaining("roomNumber is mandatory");
@@ -69,7 +70,7 @@ public class BookingServiceTest {
   void noSlotNumberShouldReturnException() {
 
     assertThatThrownBy(() -> {
-      Booking booking = new Booking(null, 1, "C01", null, new ArrayList<>());
+      Booking booking = new Booking(null, 1L, "C01", null, new ArrayList<>(), BOOKED_STATUS.getValue());
       bookingService.save(booking);
     }).isInstanceOf(FunctionalException.class)
         .hasMessageContaining("slotNumber is mandatory");
@@ -78,29 +79,27 @@ public class BookingServiceTest {
   @Test
   @DisplayName("5) booking should be saved and return new created id")
   void bookingShouldBeSavedAndReturnNewId() throws FunctionalException {
-    Booking booking = new Booking(null, 1, "C01", 1L, new ArrayList<>());
-    Booking bookingWithId = new Booking(1L, 1, "C01", 1L, new ArrayList<>());
+    Booking booking = new Booking(null, 1L, "C01", 1L, new ArrayList<>(), BOOKED_STATUS.getValue());
+    Booking bookingWithId = new Booking(1L, 1L, "C01", 1L, new ArrayList<>(), BOOKED_STATUS.getValue());
     when(bookingStore.save(booking)).thenReturn(bookingWithId);
 
     Booking result = bookingService.save(booking);
     assertThat(booking).isNotNull();
-    assertThat(result.getBookingId()).isEqualTo(1);
+    assertThat(result.getId()).isEqualTo(1);
 
   }
 
   @Test
   @DisplayName("6) cancel booking should cancel the booking and free the slot")
-  void cancelBookingShouldCancelAndFreeTheSlot() throws FunctionalException {
+  void cancelBookingShouldCancelAndFreeTheSlot() throws FunctionalException, NotFoundException {
 
-    Booking booking = new Booking(1L, 1, "C01", 1L, new ArrayList<>());
-    when(bookingStore.save(booking)).thenReturn(booking);
-    doNothing().when(slotStore).freeUp(1L);
+    Booking booking = new Booking(1L, 1L, "C01", 1L, new ArrayList<>(), BOOKED_STATUS.getValue());
+    when(bookingStore.findById(booking.getId())).thenReturn(booking);
+    doNothing().when(bookingStore).sendNotificationEvent(new BookingEvent(booking));
 
-    bookingService.cancel(booking);
+    bookingService.cancel(booking.getId());
     verify(bookingStore, times(1)).cancel(booking);
-    verify(slotStore, times(1)).freeUp(1L);
-
-
+    verify(bookingStore, times(1)).sendNotificationEvent(new BookingCanceledEvent(booking));
   }
 
   static Stream<String> blankOrNullStrings() {

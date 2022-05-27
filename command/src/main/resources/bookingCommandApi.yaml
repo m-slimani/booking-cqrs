@@ -1,0 +1,88 @@
+openapi: 3.0.0
+info:
+  description: >-
+    This is a booking romms server API. For this sample, you can use the api key
+    `special-key` to test the authorization     filters.
+  version: 1.0.0
+  title: Booking rooms Command API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: bookings
+    description: Everything about your bookings
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+paths:
+  /bookings:
+    post:
+      tags:
+        - bookings
+      summary: creates a booking
+      description: Creates a booking
+      operationId: postBookings
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingR'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingR'
+  /bookings/{bookingId}:
+    delete:
+      tags:
+        - bookings
+      summary: cancel a booking
+      description: cancel a booking
+      operationId: deleteBookings
+      parameters:
+        - in: path
+          name: bookingId
+          required: true
+          schema:
+            type: integer
+          description: The booking id
+      responses:
+        '204':
+          description: Deleted
+        '404':
+          description: id not found
+        '401':
+          description: Unauthorized
+components:
+  schemas:
+    BookingR:
+      type: object
+      properties:
+        id:
+          type: integer
+        organiserNumber:
+          type: integer
+        participants:
+          type: array
+          items:
+            type: string
+        roomNumber:
+          type: string
+        slotNumber:
+          type: integer
+        status:
+          type: string
+    BookingArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/BookingR'
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io

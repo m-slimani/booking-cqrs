@@ -1,20 +1,25 @@
 package com.cola.booking.command.domain;
 
-import com.cola.booking.command.infrastructure.BookingStore;
-import com.cola.booking.command.infrastructure.SlotStore;
+import com.cola.booking.command.domain.event.BookingCanceledEvent;
+import com.cola.booking.command.domain.event.BookingCreatedEvent;
+import com.cola.booking.command.domain.event.BookingEvent;
+import com.cola.booking.command.infrastructure.booking.BookingStore;
 import java.util.Objects;
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class BookingService {
 
   private BookingStore bookingStore;
-  private SlotStore slotStore;
 
-  public BookingService(BookingStore bookingStore, SlotStore slotStore) {
+  public BookingService(BookingStore bookingStore) {
     this.bookingStore = bookingStore;
-    this.slotStore = slotStore;
   }
 
+  @Transactional
   public Booking save(Booking booking) throws FunctionalException {
     if (Objects.isNull(booking)) {
       throw new FunctionalException("booking is mandatory");
@@ -28,11 +33,18 @@ public class BookingService {
     if (Objects.isNull(booking.getSlotNumber())) {
       throw new FunctionalException("slotNumber is mandatory");
     }
-    return bookingStore.save(booking);
+    Booking created = bookingStore.save(booking);
+    BookingEvent bookingCreatedEvent = new BookingCreatedEvent(created);
+    bookingStore.sendNotificationEvent(bookingCreatedEvent);
+    return created;
+
   }
 
-  public void cancel(Booking booking) {
-    bookingStore.cancel(booking);
-    slotStore.freeUp(booking.getSlotNumber());
+  @Transactional
+  public void cancel(Long bookingId) throws NotFoundException, FunctionalException {
+    Booking toDelete = bookingStore.findById(bookingId);
+    bookingStore.cancel(toDelete);
+    BookingEvent bookingCanceledEvent = new BookingCanceledEvent(toDelete);
+    bookingStore.sendNotificationEvent(bookingCanceledEvent);
   }
 }

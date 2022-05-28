@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  description: >-
+    This is a booking romms server API. For this sample, you can use the api key
+    `special-key` to test the authorization     filters.
+  version: 1.0.0
+  title: Booking rooms API
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: slots
+    description: Access to slots
+  - name: user
+    description: Operations about user
+    externalDocs:
+      description: Find out more about our store
+      url: http://swagger.io
+paths:
+  /slots:
+    get:
+      tags:
+        - slots
+      summary: Find slots
+      description: Returns a set of slots
+      operationId: getSlots
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+          description: The availability status of the slot
+      responses:
+        '200':
+          description: A list of slots
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlotArrayR'
+        '401':
+          description: Authorization information is missing or invalid.
+        '501':
+          description: Unexpected error.
+  /users/{organiserNumber}/bookings:
+    get:
+      tags:
+        - user
+      summary: Get user bookings
+      description: This can only be done by the logged in user.
+      operationId: getBookingsByOrganiserNumber
+      parameters:
+        - in: path
+          name: organiserNumber
+          required: true
+          schema:
+            type: integer
+          description: The organiser number
+        - in: query
+          name: status
+          schema:
+            type: string
+          description: The status of the booking (open/canceled)
+      responses:
+        '200':
+          description: A list of bookings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingArrayR'
+        '401':
+          description: Authorization information is missing or invalid.
+        '501':
+          description: Unexpected error.
+components:
+  schemas:
+    BookingR:
+      type: object
+      properties:
+        id:
+          type: integer
+        organiserNumber:
+          type: integer
+        participants:
+          type: array
+          items:
+            type: string
+        roomNumber:
+          type: string
+        slotNumber:
+          type: integer
+        status:
+          type: string
+    BookingArrayR:
+      type: array
+      items:
+        $ref: '#/components/schemas/BookingR'
+    SlotR:
+      type: object
+      properties:
+        id:
+          type: integer
+        roomNumber:
+          type: string
+        slotNumber:
+          type: integer
+          minimum: 0
+          maximum: 23
+        startTime:
+          type: string
+        status:
+          type: string
+    SlotArrayR:
+      type: array
+      items:
+        $ref: '#/components/schemas/SlotR'
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io

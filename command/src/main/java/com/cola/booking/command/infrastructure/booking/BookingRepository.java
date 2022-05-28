@@ -1,6 +1,5 @@
 package com.cola.booking.command.infrastructure.booking;
 
-import com.cola.booking.command.domain.Booking;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 

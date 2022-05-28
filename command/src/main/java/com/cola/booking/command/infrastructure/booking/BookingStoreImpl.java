@@ -35,7 +35,7 @@ public class BookingStoreImpl implements BookingStore {
   @Override
   public List<Booking> findByRoomNumberAndSlotNumber(String roomNumber, Long slotNumber) {
     return bookingRepository.findByRoomNumberAndSlotNumber(roomNumber, slotNumber)
-        .stream().map(bookingEntity -> INSTANCE.fromEntity(bookingEntity))
+        .stream().map(INSTANCE::fromEntity)
         .collect(Collectors.toList());
   }
 

@@ -1,7 +1,7 @@
 package com.cola.booking.command.application;
 
 
-import static com.cola.booking.command.application.BookingRMapper.INSTANCE;
+import static com.cola.booking.command.application.BookingRMapper.BOOKING_R_MAPPER;
 
 import com.cola.booking.command.application.api.BookingsApi;
 import com.cola.booking.command.application.model.BookingR;
@@ -25,10 +25,10 @@ public class BookingController implements BookingsApi {
   @Override
   public ResponseEntity<BookingR> postBookings(BookingR bookingR) {
     try {
-      Booking booking = bookingService.save(INSTANCE.bookingRToBooking(bookingR));
-      return new ResponseEntity(INSTANCE.bookingToBookingR(booking), HttpStatus.OK);
+      Booking booking = bookingService.save(BOOKING_R_MAPPER.bookingRToBooking(bookingR));
+      return new ResponseEntity(BOOKING_R_MAPPER.bookingToBookingR(booking), HttpStatus.OK);
     } catch (FunctionalException e) {
-      // log.error(e.getMessage(), e);
+       log.error(e.getMessage(), e);
       return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
   }

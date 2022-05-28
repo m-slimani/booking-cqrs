@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface BookingRMapper {
 
-  BookingRMapper INSTANCE = Mappers.getMapper(BookingRMapper.class);
+  BookingRMapper BOOKING_R_MAPPER = Mappers.getMapper(BookingRMapper.class);
 
   @Mapping(source = "organiserNumber", target = "organiserNumber")
   @Mapping(target = "status", constant = "booked")

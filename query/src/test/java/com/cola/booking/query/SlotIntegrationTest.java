@@ -19,6 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,15 +28,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-//@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class SlotIntegrationTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-  @Autowired
-  private ObjectMapper objectMapper;
-  @Autowired
-  private SlotRepository slotRepository;
+  @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
+  @Autowired private SlotRepository slotRepository;
 
   @Test
   @DisplayName("1) no available slots should return empty list of slots")
@@ -44,7 +43,9 @@ public class SlotIntegrationTest {
 
     MvcResult result = get("/slots", "free");
     Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    List<SlotR> response = Arrays.asList(objectMapper.readValue(result.getResponse().getContentAsString(), SlotR[].class));
+    List<SlotR> response =
+        Arrays.asList(
+            objectMapper.readValue(result.getResponse().getContentAsString(), SlotR[].class));
     Assertions.assertThat(response).size().isEqualTo(0);
   }
 
@@ -57,7 +58,9 @@ public class SlotIntegrationTest {
 
     MvcResult result = get("/slots", "free");
     Assertions.assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
-    List<SlotR> response = Arrays.asList(objectMapper.readValue(result.getResponse().getContentAsString(), SlotR[].class));
+    List<SlotR> response =
+        Arrays.asList(
+            objectMapper.readValue(result.getResponse().getContentAsString(), SlotR[].class));
     Assertions.assertThat(response).size().isEqualTo(1);
     SlotR slotR = response.get(0);
     Assertions.assertThat(slotR.getId()).isEqualTo(1L);
@@ -76,14 +79,12 @@ public class SlotIntegrationTest {
         .build();
   }
 
-
   private MvcResult get(String url, String status) throws Exception {
-    return mockMvc.perform(MockMvcRequestBuilders
-        .get(url)
-        .param("status", status)
-        .contentType(MediaType.APPLICATION_JSON_VALUE))
+    return mockMvc
+        .perform(
+            MockMvcRequestBuilders.get(url)
+                .param("status", status)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andReturn();
   }
-
-
 }

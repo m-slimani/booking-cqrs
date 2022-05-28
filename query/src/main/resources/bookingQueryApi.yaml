@@ -44,16 +44,16 @@ paths:
           description: Authorization information is missing or invalid.
         '501':
           description: Unexpected error.
-  /users/{organiserNumber}/bookings:
+  /users/{userId}/bookings:
     get:
       tags:
         - user
       summary: Get user bookings
       description: This can only be done by the logged in user.
-      operationId: getBookingsByOrganiserNumber
+      operationId: getBookingsByUserId
       parameters:
         - in: path
-          name: organiserNumber
+          name: userId
           required: true
           schema:
             type: integer
@@ -81,7 +81,7 @@ components:
       properties:
         id:
           type: integer
-        organiserNumber:
+        userId:
           type: integer
         participants:
           type: array

@@ -24,7 +24,7 @@ public class SlotController implements SlotsApi {
     if (SlotStatusEnum.FREE.getValue().equals(status)) {
       return new ResponseEntity(
           slotService.getFreeSlots().stream()
-              .map(slot -> SLOT_R_MAPPER.toSlotR(slot))
+              .map(SLOT_R_MAPPER::toSlotR)
               .collect(Collectors.toList()),
           HttpStatus.OK);
     }

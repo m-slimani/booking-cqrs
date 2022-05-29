@@ -1,6 +1,5 @@
-package com.cola.booking.command.domain.event;
+package com.cola.booking.query.application.kafka;
 
-import com.cola.booking.command.domain.Booking;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,7 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class BookingEvent {
+public class BookingRecord {
 
   private Booking booking;
   private String type;

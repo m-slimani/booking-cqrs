@@ -39,4 +39,10 @@ public class BookingHistoryStoreImpl implements BookingHistoryStore {
         .map(BOOKING_HISTORY_ENTITY_MAPPER::fromEntity)
         .collect(Collectors.toList());
   }
+
+  @Override
+  public void saveHistory(BookingHistory bookingHistory) {
+    bookingHistoryRepository.save(BOOKING_HISTORY_ENTITY_MAPPER.toEntity(bookingHistory));
+
+  }
 }

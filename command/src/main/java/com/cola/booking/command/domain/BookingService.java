@@ -1,7 +1,5 @@
 package com.cola.booking.command.domain;
 
-import com.cola.booking.command.domain.event.BookingCanceledEvent;
-import com.cola.booking.command.domain.event.BookingCreatedEvent;
 import com.cola.booking.command.domain.event.BookingEvent;
 import com.cola.booking.command.infrastructure.booking.BookingStore;
 import java.util.List;
@@ -34,25 +32,24 @@ public class BookingService {
     if (Objects.isNull(booking.getStartDateTime())) {
       throw new FunctionalException("startDatetime is mandatory");
     }
-    List<Booking> existing = bookingStore.findBookings(booking.getRoomNumber(), booking.getStartDateTime());
+    List<Booking> existing =
+        bookingStore.findBookings(booking.getRoomNumber(), booking.getStartDateTime());
 
     if (existing.isEmpty()) {
       Booking created = bookingStore.save(booking);
-      BookingEvent bookingCreatedEvent = new BookingCreatedEvent(created);
-      bookingStore.sendNotificationEvent(bookingCreatedEvent);
+      bookingStore.sendCreateNotificationEvent(
+          BookingEvent.builder().booking(created).type("create").build());
       return created;
     } else {
       throw new FunctionalException("Slot already booked");
     }
-
-
   }
 
   @Transactional
   public void cancel(Long bookingId) throws NotFoundException, FunctionalException {
     Booking toDelete = bookingStore.findById(bookingId);
     bookingStore.cancel(toDelete);
-    BookingEvent bookingCanceledEvent = new BookingCanceledEvent(toDelete);
-    bookingStore.sendNotificationEvent(bookingCanceledEvent);
+    bookingStore.sendCancelNotificationEvent(
+        BookingEvent.builder().booking(toDelete).type("cancel").build());
   }
 }

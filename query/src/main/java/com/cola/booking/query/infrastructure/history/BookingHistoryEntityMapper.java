@@ -11,4 +11,6 @@ public interface BookingHistoryEntityMapper {
       Mappers.getMapper(BookingHistoryEntityMapper.class);
 
   BookingHistory fromEntity(BookingHistoryEntity bookingHistoryEntity);
+
+  BookingHistoryEntity toEntity(BookingHistory bookingHistory);
 }

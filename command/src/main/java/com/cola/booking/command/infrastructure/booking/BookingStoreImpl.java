@@ -5,6 +5,8 @@ import static com.cola.booking.command.infrastructure.booking.BookingEntityMappe
 import com.cola.booking.command.domain.Booking;
 import com.cola.booking.command.domain.event.BookingEvent;
 import com.cola.booking.command.infrastructure.kafka.KafkaProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -46,9 +48,27 @@ public class BookingStoreImpl implements BookingStore {
   }
 
   @Override
-  public void sendNotificationEvent(BookingEvent bookingEvent) {
-    kafkaProducer.send(bookingEvent);
-    log.info("BookingEvent sent to queue is : " + bookingEvent);
+  public void sendCancelNotificationEvent(BookingEvent bookingEvent) {
+    String message = null;
+    try {
+      message = new ObjectMapper().writeValueAsString(bookingEvent);
+    } catch (JsonProcessingException e) {
+      log.error(e.getMessage(), e);
+    }
+    kafkaProducer.send(message);
+    log.info("BookingEvent sent to queue is : " + message);
+  }
+
+  @Override
+  public void sendCreateNotificationEvent(BookingEvent bookingEvent) {
+    String message = null;
+    try {
+      message = new ObjectMapper().writeValueAsString(bookingEvent);
+    } catch (JsonProcessingException e) {
+      log.error(e.getMessage(), e);
+    }
+    kafkaProducer.send(message);
+    log.info("BookingEvent sent to queue is : " + message);
   }
 
   @Override

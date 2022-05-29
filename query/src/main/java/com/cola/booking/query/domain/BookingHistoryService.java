@@ -17,4 +17,8 @@ public class BookingHistoryService {
         ? bookingHistoryStore.getHistory(userId)
         : bookingHistoryStore.getHistory(userId, status);
   }
+
+  public void save(BookingHistory bookingHistory) {
+        bookingHistoryStore.saveHistory(bookingHistory);
+  }
 }

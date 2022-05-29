@@ -11,4 +11,6 @@ public interface BookingHistoryStore {
   List<BookingHistory> getHistory(Integer organiserNumber, String status);
 
   List<BookingHistory> findByStartDateTimeBetweenAndStatus(LocalDate date, String status);
+
+  void saveHistory(BookingHistory bookingHistory);
 }

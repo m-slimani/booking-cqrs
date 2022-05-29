@@ -9,7 +9,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.cola.booking.command.domain.event.BookingCanceledEvent;
 import com.cola.booking.command.domain.event.BookingEvent;
 import com.cola.booking.command.infrastructure.booking.BookingStore;
 import com.cola.booking.command.infrastructure.booking.BookingStoreImpl;
@@ -52,15 +51,16 @@ public class BookingServiceTest {
   @DisplayName("2) null userId number should throw exception")
   void noOrganiserNumberShouldReturnException() {
     assertThatThrownBy(
-            () -> bookingService.save(
-                Booking.builder()
-                    .id(1L)
-                    .userId(null)
-                    .roomNumber("C01")
-                    .startDateTime(JANUARY_FIRST_EIGHT_AM)
-                    .status(BOOKED_STATUS.getValue())
-                    .participants(new ArrayList<>())
-                    .build()))
+            () ->
+                bookingService.save(
+                    Booking.builder()
+                        .id(1L)
+                        .userId(null)
+                        .roomNumber("C01")
+                        .startDateTime(JANUARY_FIRST_EIGHT_AM)
+                        .status(BOOKED_STATUS.getValue())
+                        .participants(new ArrayList<>())
+                        .build()))
         .isInstanceOf(FunctionalException.class)
         .hasMessageContaining("userId is mandatory");
   }
@@ -70,15 +70,16 @@ public class BookingServiceTest {
   @MethodSource("blankOrNullStrings")
   void noRoomNumberShouldReturnException(String roomNumber) {
     assertThatThrownBy(
-            () -> bookingService.save(
-                Booking.builder()
-                    .id(1L)
-                    .userId(1L)
-                    .roomNumber(roomNumber)
-                    .startDateTime(JANUARY_FIRST_EIGHT_AM)
-                    .status(BOOKED_STATUS.getValue())
-                    .participants(new ArrayList<>())
-                    .build()))
+            () ->
+                bookingService.save(
+                    Booking.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .roomNumber(roomNumber)
+                        .startDateTime(JANUARY_FIRST_EIGHT_AM)
+                        .status(BOOKED_STATUS.getValue())
+                        .participants(new ArrayList<>())
+                        .build()))
         .isInstanceOf(FunctionalException.class)
         .hasMessageContaining("roomNumber is mandatory");
   }
@@ -88,15 +89,16 @@ public class BookingServiceTest {
   void noSlotNumberShouldReturnException() {
 
     assertThatThrownBy(
-            () -> bookingService.save(
-                Booking.builder()
-                    .id(1L)
-                    .userId(1L)
-                    .roomNumber("C01")
-                    .startDateTime(null)
-                    .status(BOOKED_STATUS.getValue())
-                    .participants(new ArrayList<>())
-                    .build()))
+            () ->
+                bookingService.save(
+                    Booking.builder()
+                        .id(1L)
+                        .userId(1L)
+                        .roomNumber("C01")
+                        .startDateTime(null)
+                        .status(BOOKED_STATUS.getValue())
+                        .participants(new ArrayList<>())
+                        .build()))
         .isInstanceOf(FunctionalException.class)
         .hasMessageContaining("startDatetime is mandatory");
   }
@@ -144,11 +146,16 @@ public class BookingServiceTest {
             .participants(new ArrayList<>())
             .build();
     when(bookingStore.findById(booking.getId())).thenReturn(booking);
-    doNothing().when(bookingStore).sendNotificationEvent(new BookingEvent(booking));
+    doNothing()
+        .when(bookingStore)
+        .sendCreateNotificationEvent(
+            BookingEvent.builder().booking(booking).type("create").build());
 
     bookingService.cancel(booking.getId());
     verify(bookingStore, times(1)).cancel(booking);
-    verify(bookingStore, times(1)).sendNotificationEvent(new BookingCanceledEvent(booking));
+    verify(bookingStore, times(1))
+        .sendCreateNotificationEvent(
+            BookingEvent.builder().booking(booking).type("cancel").build());
   }
 
   static Stream<String> blankOrNullStrings() {

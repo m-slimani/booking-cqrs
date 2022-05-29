@@ -12,6 +12,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,14 @@ public class SlotController implements SlotsApi {
   @Override
   public ResponseEntity<List<SlotR>> getSlots(String status, String date) {
 
+    if (StringUtils.isBlank(date)) {
+      return getResponseEntity("input date is mandatory", HttpStatus.BAD_REQUEST);
+    }
+    if (!FREE.getValue().equals(status)) {
+      return getResponseEntity(
+          "Status value :[" + status + "], is not allowed", HttpStatus.BAD_REQUEST);
+    }
+
     LocalDate inputDate;
     try {
       inputDate = LocalDate.parse(date, DATE_FORMATTER);
@@ -36,10 +45,6 @@ public class SlotController implements SlotsApi {
           HttpStatus.BAD_REQUEST);
     }
 
-    if (!FREE.getValue().equals(status)) {
-      return getResponseEntity(
-          "Status value :[" + status + "], is not allowed", HttpStatus.BAD_REQUEST);
-    }
     return getResponseEntity(
         slotService.getFreeSlots(inputDate).stream()
             .map(SLOT_R_MAPPER::toSlotR)

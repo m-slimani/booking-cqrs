@@ -1,4 +1,4 @@
-package com.cola.booking.query.infrastructure.init;
+package com.cola.booking.query.infrastructure.opening;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,12 +6,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "slot")
+@ConfigurationProperties(prefix = "opening")
 @Getter
 @Setter
-public class SlotProperties {
+public class OpeningProperties {
 
-  private String openingStartTime;
-  private String openingEndTime;
-
+  private String startTime;
+  private String endTime;
+  private int duration;
 }

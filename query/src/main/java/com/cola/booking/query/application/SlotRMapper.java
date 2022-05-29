@@ -11,6 +11,6 @@ public interface SlotRMapper {
 
   SlotRMapper SLOT_R_MAPPER = Mappers.getMapper(SlotRMapper.class);
 
-  @Mapping(source = "startTime", target = "startTime")
+  @Mapping(source = "startDateTime", target = "startDateTime")
   SlotR toSlotR(Slot slot);
 }

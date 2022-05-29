@@ -7,8 +7,8 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface BookingHistoryEntityMapper {
 
-  BookingHistoryEntityMapper BOOKING_HISTORY_ENTITY_MAPPER = Mappers.getMapper(BookingHistoryEntityMapper.class);
+  BookingHistoryEntityMapper BOOKING_HISTORY_ENTITY_MAPPER =
+      Mappers.getMapper(BookingHistoryEntityMapper.class);
 
-  // @Mapping(source = "startTime", target = "startTime")
   BookingHistory fromEntity(BookingHistoryEntity bookingHistoryEntity);
 }

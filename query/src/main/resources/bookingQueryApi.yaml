@@ -33,6 +33,11 @@ paths:
           schema:
             type: string
           description: The availability status of the slot
+        - in: query
+          name: date
+          schema:
+            type: string
+          description: The date of the slots
       responses:
         '200':
           description: A list of slots
@@ -89,8 +94,6 @@ components:
             type: string
         roomNumber:
           type: string
-        slotNumber:
-          type: integer
         status:
           type: string
     BookingArrayR:
@@ -100,15 +103,9 @@ components:
     SlotR:
       type: object
       properties:
-        id:
-          type: integer
         roomNumber:
           type: string
-        slotNumber:
-          type: integer
-          minimum: 0
-          maximum: 23
-        startTime:
+        startDateTime:
           type: string
         status:
           type: string

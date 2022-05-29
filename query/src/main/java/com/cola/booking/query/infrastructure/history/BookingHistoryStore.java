@@ -1,8 +1,8 @@
 package com.cola.booking.query.infrastructure.history;
 
 import com.cola.booking.query.domain.BookingHistory;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface BookingHistoryStore {
 
@@ -10,5 +10,5 @@ public interface BookingHistoryStore {
 
   List<BookingHistory> getHistory(Integer organiserNumber, String status);
 
-  Optional<BookingHistory> FindBookingById(Integer bookingId);
+  List<BookingHistory> findByStartDateTimeBetweenAndStatus(LocalDate date, String status);
 }

@@ -1,4 +1,4 @@
-package com.cola.booking.query.infrastructure.init;
+package com.cola.booking.query.infrastructure.opening;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,5 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class RoomProperties {
 
-  private String cokeNames;
-  private String pepsiNames;
-
+  private String names;
 }

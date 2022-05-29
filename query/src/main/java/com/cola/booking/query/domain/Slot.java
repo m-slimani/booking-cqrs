@@ -1,6 +1,6 @@
 package com.cola.booking.query.domain;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -18,9 +18,7 @@ import lombok.ToString;
 @ToString
 public class Slot {
 
-  private Long id;
   private String roomNumber;
-  private Integer slotNumber;
-  private LocalTime startTime;
+  private LocalDateTime startDateTime;
   private String status;
 }

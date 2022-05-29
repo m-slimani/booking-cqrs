@@ -1,11 +1,11 @@
 package com.cola.booking.query.application;
 
 import static com.cola.booking.query.application.SlotRMapper.SLOT_R_MAPPER;
-import static com.cola.booking.query.domain.SlotStatusEnum.FREE;
+import static com.cola.booking.query.domain.AvailabilityStatusEnum.FREE;
 
 import com.cola.booking.query.application.model.SlotR;
 import com.cola.booking.query.domain.Slot;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,22 +29,17 @@ class SlotRMapperTest {
 
   private SlotR buildSlotR() {
     SlotR slotR = new SlotR();
-    slotR.setId(1);
     slotR.setRoomNumber("C01");
-    slotR.setSlotNumber(1);
     slotR.setStatus(FREE.getValue());
-    slotR.setStartTime("08:00:00");
+    slotR.setStartDateTime("2022-01-01T08:00:00");
     return slotR;
   }
 
   private Slot buildSlot() {
     return Slot.builder()
-        .id(1L)
         .roomNumber("C01")
-        .slotNumber(1)
         .status(FREE.getValue())
-        .startTime(LocalTime.of(8, 0))
+        .startDateTime(LocalDateTime.of(2022, 1, 1, 8, 0, 0))
         .build();
   }
-
 }

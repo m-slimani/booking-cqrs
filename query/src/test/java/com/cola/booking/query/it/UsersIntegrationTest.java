@@ -1,6 +1,6 @@
-package com.cola.booking.query;
+package com.cola.booking.query.it;
 
-import static com.cola.booking.query.domain.SlotStatusEnum.BOOKED;
+import static com.cola.booking.query.domain.AvailabilityStatusEnum.BOOKED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cola.booking.query.application.model.BookingR;
@@ -68,7 +68,6 @@ public class UsersIntegrationTest {
     bookingR.setId(1);
     bookingR.setUserId(1);
     bookingR.setRoomNumber("C01");
-    bookingR.setSlotNumber(1);
     bookingR.setStatus(BOOKED.getValue());
     bookingR.setParticipants(Arrays.asList("Eric", "Marc"));
     return bookingR;
@@ -79,7 +78,6 @@ public class UsersIntegrationTest {
         .id(1L)
         .userId(1L)
         .roomNumber("C01")
-        .slotNumber(1L)
         .status(BOOKED.getValue())
         .participants("Eric,Marc")
         .build();

@@ -1,5 +1,6 @@
 package com.cola.booking.query.infrastructure.history;
 
+import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,9 +23,10 @@ public class BookingHistoryEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+
   private Long userId;
-  private String participants;
   private String roomNumber;
-  private Long slotNumber;
+  private LocalDateTime startDateTime;
+  private String participants;
   private String status;
 }

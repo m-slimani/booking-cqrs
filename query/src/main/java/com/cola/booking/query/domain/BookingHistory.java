@@ -1,14 +1,17 @@
 package com.cola.booking.query.domain;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -17,9 +20,8 @@ public class BookingHistory {
 
   private Long id;
   private Long userId;
-  private String participants;
   private String roomNumber;
-  private Long slotNumber;
+  private LocalDateTime startDateTime;
+  private String participants;
   private String status;
-
 }

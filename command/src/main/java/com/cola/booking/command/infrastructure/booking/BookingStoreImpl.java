@@ -4,24 +4,24 @@ import static com.cola.booking.command.infrastructure.booking.BookingEntityMappe
 
 import com.cola.booking.command.domain.Booking;
 import com.cola.booking.command.domain.event.BookingEvent;
+import com.cola.booking.command.infrastructure.kafka.KafkaProducer;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class BookingStoreImpl implements BookingStore {
 
   private BookingRepository bookingRepository;
-
-  public BookingStoreImpl(BookingRepository bookingRepository) {
-    this.bookingRepository = bookingRepository;
-  }
+  private KafkaProducer kafkaProducer;
 
   @Override
   public Booking findById(Long bookingId) throws NotFoundException {
@@ -47,6 +47,7 @@ public class BookingStoreImpl implements BookingStore {
 
   @Override
   public void sendNotificationEvent(BookingEvent bookingEvent) {
+    kafkaProducer.send(bookingEvent);
     log.info("BookingEvent sent to queue is : " + bookingEvent);
   }
 

@@ -67,18 +67,18 @@ components:
       properties:
         id:
           type: integer
-        organiserNumber:
+        userId:
           type: integer
+        roomNumber:
+          type: string
+        startDateTime:
+          type: string
+        status:
+          type: string
         participants:
           type: array
           items:
             type: string
-        roomNumber:
-          type: string
-        slotNumber:
-          type: integer
-        status:
-          type: string
     BookingArray:
       type: array
       items:

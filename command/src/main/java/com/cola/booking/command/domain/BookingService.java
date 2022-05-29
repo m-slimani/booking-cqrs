@@ -25,16 +25,16 @@ public class BookingService {
     if (Objects.isNull(booking)) {
       throw new FunctionalException("booking is mandatory");
     }
-    if (Objects.isNull(booking.getOrganiserNumber())) {
-      throw new FunctionalException("organiserNumber is mandatory");
+    if (Objects.isNull(booking.getUserId())) {
+      throw new FunctionalException("userId is mandatory");
     }
     if (StringUtils.isBlank(booking.getRoomNumber())) {
       throw new FunctionalException("roomNumber is mandatory");
     }
-    if (Objects.isNull(booking.getSlotNumber())) {
-      throw new FunctionalException("slotNumber is mandatory");
+    if (Objects.isNull(booking.getStartDateTime())) {
+      throw new FunctionalException("startDatetime is mandatory");
     }
-    List<Booking> existing = bookingStore.findByRoomNumberAndSlotNumber(booking.getRoomNumber(), booking.getSlotNumber());
+    List<Booking> existing = bookingStore.findBookings(booking.getRoomNumber(), booking.getStartDateTime());
 
     if (existing.isEmpty()) {
       Booking created = bookingStore.save(booking);

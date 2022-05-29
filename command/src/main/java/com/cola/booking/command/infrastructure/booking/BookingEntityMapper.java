@@ -17,7 +17,7 @@ public interface BookingEntityMapper {
   @Mapping(source = "participants", target = "participants")
   Booking fromEntity(BookingEntity bookingEntity);
 
-  @Mapping(source = "organiserNumber", target = "organiserNumber")
+  @Mapping(source = "userId", target = "userId")
   @Mapping(source = "participants", target = "participants")
   BookingEntity toEntity(Booking booking);
 

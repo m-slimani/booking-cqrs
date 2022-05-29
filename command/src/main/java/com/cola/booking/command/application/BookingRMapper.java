@@ -11,7 +11,7 @@ public interface BookingRMapper {
 
   BookingRMapper BOOKING_R_MAPPER = Mappers.getMapper(BookingRMapper.class);
 
-  @Mapping(source = "organiserNumber", target = "organiserNumber")
+  @Mapping(source = "userId", target = "userId")
   @Mapping(target = "status", constant = "booked")
   @Mapping(source = "roomNumber", target = "roomNumber")
   Booking bookingRToBooking(BookingR bookingR);

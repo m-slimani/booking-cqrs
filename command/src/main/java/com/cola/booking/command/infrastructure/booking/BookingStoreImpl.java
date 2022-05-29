@@ -4,6 +4,7 @@ import static com.cola.booking.command.infrastructure.booking.BookingEntityMappe
 
 import com.cola.booking.command.domain.Booking;
 import com.cola.booking.command.domain.event.BookingEvent;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,17 +34,15 @@ public class BookingStoreImpl implements BookingStore {
   }
 
   @Override
-  public List<Booking> findByRoomNumberAndSlotNumber(String roomNumber, Long slotNumber) {
-    return bookingRepository.findByRoomNumberAndSlotNumber(roomNumber, slotNumber)
-        .stream().map(INSTANCE::fromEntity)
+  public List<Booking> findBookings(String roomNumber, LocalDateTime startDateTime) {
+    return bookingRepository.findByRoomNumberAndStartDateTime(roomNumber, startDateTime).stream()
+        .map(INSTANCE::fromEntity)
         .collect(Collectors.toList());
   }
 
   @Override
   public Booking save(Booking booking) {
-    return INSTANCE.fromEntity(
-        bookingRepository.save(
-            INSTANCE.toEntity(booking)));
+    return INSTANCE.fromEntity(bookingRepository.save(INSTANCE.toEntity(booking)));
   }
 
   @Override
@@ -56,5 +55,4 @@ public class BookingStoreImpl implements BookingStore {
   public void cancel(Booking booking) {
     bookingRepository.delete(BookingEntityMapper.INSTANCE.toEntity(booking));
   }
-
 }

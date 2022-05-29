@@ -5,6 +5,7 @@ import com.cola.booking.command.domain.BookingStatusEnum;
 import com.cola.booking.command.infrastructure.booking.BookingEntity;
 import com.cola.booking.command.infrastructure.booking.BookingRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BookingIntegrationTest {
+
+  private static final LocalDateTime JANUARY_FIRST_EIGHT_AM = LocalDateTime.of(2022, 1, 1, 8, 0, 0);
+
 
   @Autowired
   private MockMvc mockMvc;
@@ -86,9 +90,9 @@ public class BookingIntegrationTest {
   private BookingEntity buildEntity() {
     return BookingEntity.builder()
         .id(1L)
-        .organiserNumber(1L)
+        .userId(1L)
         .roomNumber("C01")
-        .slotNumber(1L)
+        .startDateTime(JANUARY_FIRST_EIGHT_AM)
         .participants("John,Marc")
         .status(BookingStatusEnum.BOOKED_STATUS.getValue())
         .build();
@@ -96,9 +100,9 @@ public class BookingIntegrationTest {
 
   private void checkAttributes(BookingR response) {
     Assertions.assertThat(response.getId()).isEqualTo(1);
-    Assertions.assertThat(response.getOrganiserNumber()).isEqualTo(1);
+    Assertions.assertThat(response.getUserId()).isEqualTo(1);
     Assertions.assertThat(response.getRoomNumber()).isEqualTo("C01");
-    Assertions.assertThat(response.getSlotNumber()).isEqualTo(1);
+    Assertions.assertThat(response.getStartDateTime()).isEqualTo("2022-01-01T08:00:00");
     Assertions.assertThat(response.getParticipants()).isEqualTo(Arrays.asList("John", "Marc"));
     Assertions.assertThat(response.getStatus()).isEqualTo(BookingStatusEnum.BOOKED_STATUS.getValue());
   }
@@ -120,9 +124,9 @@ public class BookingIntegrationTest {
 
   private BookingR buildBookingR() {
     BookingR bookingR = new BookingR();
-    bookingR.setOrganiserNumber(1);
+    bookingR.setUserId(1);
     bookingR.setRoomNumber("C01");
-    bookingR.setSlotNumber(1);
+    bookingR.setStartDateTime("2022-01-01T08:00:00");
     bookingR.setParticipants(Arrays.asList("John", "Marc"));
     return bookingR;
   }

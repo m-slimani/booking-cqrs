@@ -15,24 +15,21 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class KafkaConsummer {
+public class kafkaConsumer {
 
   @Value("${topic.name")
   private String topicName;
 
   private BookingHistoryService bookingHistoryService;
 
-  public KafkaConsummer(BookingHistoryService bookingHistoryService) {
+  public kafkaConsumer(BookingHistoryService bookingHistoryService) {
     this.bookingHistoryService = bookingHistoryService;
   }
 
   @KafkaListener(topics = "${topic.name}", groupId = "group_id")
   public void consume(ConsumerRecord<String, String> payload) {
-    log.info("Topic: {}", topicName);
-    log.info("key: {}", payload.key());
-    log.info("Headers: {}", payload.headers());
-    log.info("Partition: {}", payload.partition());
-    log.info("Order: {}", payload.value());
+    log.info("Record key: {}, record payload {} ", payload.key(), payload.value());
+
     BookingRecord bookingRecord = null;
     try {
       bookingRecord = new ObjectMapper().readValue(payload.value(), BookingRecord.class);
@@ -40,26 +37,20 @@ public class KafkaConsummer {
       log.error(e.getMessage(), e);
     }
     Booking record = bookingRecord.getBooking();
-    bookingHistoryService.save(
-        BookingHistory.builder()
-            .id(record.getId())
-            .userId(record.getUserId())
-            .roomNumber(record.getRoomNumber())
-            .startDateTime(record.getStartDateTime())
-            .status(
-                "create".equals(bookingRecord.getType())
-                    ? BOOKED.getValue()
-                    : AvailabilityStatusEnum.FREE.getValue())
-            .participants(String.join(",", record.getParticipants()))
-            .build());
+    bookingHistoryService.save(buildHistory(record, bookingRecord.getType()));
   }
 
-  //  @KafkaListener(topics = "topicName", groupId = "group_id")
-  //  public void listenWithHeaders(
-  //      @Payload String message,
-  //      @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
-  //    System.out.println(
-  //        "Received Message: " + message
-  //            + "from partition: " + partition);
-  //  }
+  private BookingHistory buildHistory( Booking record, String type) {
+    return BookingHistory.builder()
+        .id(record.getId())
+        .userId(record.getUserId())
+        .roomNumber(record.getRoomNumber())
+        .startDateTime(record.getStartDateTime())
+        .status(
+            "create".equals(type)
+                ? BOOKED.getValue()
+                : AvailabilityStatusEnum.FREE.getValue())
+        .participants(String.join(",", record.getParticipants()))
+        .build();
+  }
 }

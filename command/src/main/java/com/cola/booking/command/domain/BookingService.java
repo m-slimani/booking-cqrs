@@ -37,7 +37,7 @@ public class BookingService {
 
     if (existing.isEmpty()) {
       Booking created = bookingStore.save(booking);
-      bookingStore.sendCreateNotificationEvent(
+      bookingStore.sendNotificationEvent(
           BookingEvent.builder().booking(created).type("create").build());
       return created;
     } else {
@@ -49,7 +49,7 @@ public class BookingService {
   public void cancel(Long bookingId) throws NotFoundException, FunctionalException {
     Booking toDelete = bookingStore.findById(bookingId);
     bookingStore.cancel(toDelete);
-    bookingStore.sendCancelNotificationEvent(
+    bookingStore.sendNotificationEvent(
         BookingEvent.builder().booking(toDelete).type("cancel").build());
   }
 }

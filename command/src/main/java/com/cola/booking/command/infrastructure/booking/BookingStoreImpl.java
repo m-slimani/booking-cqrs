@@ -48,26 +48,14 @@ public class BookingStoreImpl implements BookingStore {
   }
 
   @Override
-  public void sendCancelNotificationEvent(BookingEvent bookingEvent) {
+  public void sendNotificationEvent(BookingEvent bookingEvent) {
     String message = null;
     try {
       message = new ObjectMapper().writeValueAsString(bookingEvent);
     } catch (JsonProcessingException e) {
       log.error(e.getMessage(), e);
     }
-    kafkaProducer.send(message);
-    log.info("BookingEvent sent to queue is : " + message);
-  }
-
-  @Override
-  public void sendCreateNotificationEvent(BookingEvent bookingEvent) {
-    String message = null;
-    try {
-      message = new ObjectMapper().writeValueAsString(bookingEvent);
-    } catch (JsonProcessingException e) {
-      log.error(e.getMessage(), e);
-    }
-    kafkaProducer.send(message);
+    kafkaProducer.send(bookingEvent.getBooking().getId(), message);
     log.info("BookingEvent sent to queue is : " + message);
   }
 

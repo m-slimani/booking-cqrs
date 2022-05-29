@@ -15,9 +15,7 @@ public interface BookingStore {
 
   Booking save(Booking booking);
 
-  void sendCreateNotificationEvent(BookingEvent bookingEvent);
-
-  void sendCancelNotificationEvent(BookingEvent bookingEvent);
+  void sendNotificationEvent(BookingEvent bookingEvent);
 
   void cancel(Booking booking) throws FunctionalException;
 }

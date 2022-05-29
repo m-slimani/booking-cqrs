@@ -148,13 +148,13 @@ public class BookingServiceTest {
     when(bookingStore.findById(booking.getId())).thenReturn(booking);
     doNothing()
         .when(bookingStore)
-        .sendCancelNotificationEvent(
+        .sendNotificationEvent(
             BookingEvent.builder().booking(booking).type("create").build());
 
     bookingService.cancel(booking.getId());
     verify(bookingStore, times(1)).cancel(booking);
     verify(bookingStore, times(1))
-        .sendCancelNotificationEvent(
+        .sendNotificationEvent(
             BookingEvent.builder().booking(booking).type("cancel").build());
   }
 

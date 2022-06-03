@@ -1,17 +1,15 @@
 package com.cola.booking.query.infrastructure.history;
 
+import static com.cola.booking.query.DatesUtils.JANUARY_FIRST_EIGHT_AM;
 import static com.cola.booking.query.domain.AvailabilityStatusEnum.BOOKED;
 import static com.cola.booking.query.infrastructure.history.BookingHistoryEntityMapper.BOOKING_HISTORY_ENTITY_MAPPER;
 
 import com.cola.booking.query.domain.BookingHistory;
-import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class BookingHistoryEntityMapperTest {
-
-  private static final LocalDateTime JANUARY_FIRST_EIGHT_AM = LocalDateTime.of(2022, 1, 1, 8, 0, 0);
 
   @Test
   @DisplayName("1) null value should return null")

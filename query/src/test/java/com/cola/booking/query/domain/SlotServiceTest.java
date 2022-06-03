@@ -1,5 +1,7 @@
 package com.cola.booking.query.domain;
 
+import static com.cola.booking.query.DatesUtils.JANUARY_FIRST;
+import static com.cola.booking.query.DatesUtils.JANUARY_FIRST_EIGHT_AM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -7,8 +9,6 @@ import static org.mockito.Mockito.when;
 import com.cola.booking.query.domain.opening.Opening;
 import com.cola.booking.query.infrastructure.history.BookingHistoryStore;
 import com.cola.booking.query.infrastructure.opening.OpeningStore;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class SlotServiceTest {
-  private static final LocalDate JANUARY_FIRST = LocalDate.of(2022, 1, 1);
-  private static final LocalDateTime JANUARY_FIRST_EIGHT_AM = LocalDateTime.of(2022, 1, 1, 8, 0, 0);
 
   private SlotService slotService;
 

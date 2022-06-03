@@ -4,6 +4,7 @@ import com.cola.booking.command.domain.Booking;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,6 +23,9 @@ public interface BookingEntityMapper {
   BookingEntity toEntity(Booking booking);
 
   default String mapParticipants(List<String> participants) {
+   if (Objects.isNull( participants) ||  participants.isEmpty()){
+     return StringUtils.EMPTY;
+   }
     return String.join(",", participants);
   }
 

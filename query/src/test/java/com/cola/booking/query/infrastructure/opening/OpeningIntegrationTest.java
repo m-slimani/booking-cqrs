@@ -1,9 +1,9 @@
 package com.cola.booking.query.infrastructure.opening;
 
+import static com.cola.booking.query.DatesUtils.JANUARY_FIRST;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.cola.booking.query.domain.opening.Opening;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class OpeningIntegrationTest {
-  private static final LocalDate JANUARY_FIRST = LocalDate.of(2022, 1, 1);
 
   @Autowired private OpeningProperties openingProperties;
   @Autowired private RoomProperties roomProperties;

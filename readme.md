@@ -1,4 +1,4 @@
-#Booking-cqrs-api
+# Booking-cqrs-api
 
 This application allow the following features:
 1. Ability to see available rooms and available slots

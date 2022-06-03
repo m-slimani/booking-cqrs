@@ -1,5 +1,7 @@
 package com.cola.booking.query.it;
 
+import static com.cola.booking.query.DatesUtils.JANUARY_FIRST;
+import static com.cola.booking.query.DatesUtils.JANUARY_FIRST_EIGHT_AM;
 import static com.cola.booking.query.domain.AvailabilityStatusEnum.BOOKED;
 import static com.cola.booking.query.domain.AvailabilityStatusEnum.FREE;
 
@@ -42,12 +44,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class SlotIntegrationTest {
-
-  private static final LocalDate JANUARY_FIRST = LocalDate.of(2022, 1, 1);
-  private static final LocalDate JANUARY_SECOND = LocalDate.of(2022, 1, 2);
-  private static final LocalDateTime JANUARY_FIRST_EIGHT_AM = LocalDateTime.of(2022, 1, 1, 8, 0, 0);
-  private static final LocalDateTime JANUARY_SECOND_EIGHT_AM =
-      LocalDateTime.of(2022, 1, 2, 8, 0, 0);
 
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd");

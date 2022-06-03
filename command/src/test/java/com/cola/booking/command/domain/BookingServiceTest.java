@@ -1,6 +1,8 @@
 package com.cola.booking.command.domain;
 
+import static com.cola.booking.command.DatesUtils.JANUARY_FIRST_EIGHT_AM;
 import static com.cola.booking.command.domain.BookingStatusEnum.BOOKED_STATUS;
+import static com.cola.booking.command.domain.event.EventTypeEnum.CREATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doNothing;
@@ -27,8 +29,6 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public class BookingServiceTest {
 
-  private static final LocalDateTime JANUARY_FIRST_EIGHT_AM = LocalDateTime.of(2022, 1, 1, 8, 0, 0);
-
   private BookingService bookingService;
 
   private BookingStore bookingStore;
@@ -50,17 +50,7 @@ public class BookingServiceTest {
   @Test
   @DisplayName("2) null userId number should throw exception")
   void noOrganiserNumberShouldReturnException() {
-    assertThatThrownBy(
-            () ->
-                bookingService.save(
-                    Booking.builder()
-                        .id(1L)
-                        .userId(null)
-                        .roomNumber("C01")
-                        .startDateTime(JANUARY_FIRST_EIGHT_AM)
-                        .status(BOOKED_STATUS.getValue())
-                        .participants(new ArrayList<>())
-                        .build()))
+    assertThatThrownBy(() -> saveBooking("C01", JANUARY_FIRST_EIGHT_AM, null))
         .isInstanceOf(FunctionalException.class)
         .hasMessageContaining("userId is mandatory");
   }
@@ -68,18 +58,8 @@ public class BookingServiceTest {
   @ParameterizedTest
   @DisplayName("3) blank or null room number should throw exception")
   @MethodSource("blankOrNullStrings")
-  void noRoomNumberShouldReturnException(String roomNumber) {
-    assertThatThrownBy(
-            () ->
-                bookingService.save(
-                    Booking.builder()
-                        .id(1L)
-                        .userId(1L)
-                        .roomNumber(roomNumber)
-                        .startDateTime(JANUARY_FIRST_EIGHT_AM)
-                        .status(BOOKED_STATUS.getValue())
-                        .participants(new ArrayList<>())
-                        .build()))
+  void noRoomNumberShouldReturnException(String invalidRoomNumber) {
+    assertThatThrownBy(() -> saveBooking(invalidRoomNumber, JANUARY_FIRST_EIGHT_AM, 1L))
         .isInstanceOf(FunctionalException.class)
         .hasMessageContaining("roomNumber is mandatory");
   }
@@ -88,43 +68,23 @@ public class BookingServiceTest {
   @DisplayName("4) null startDateTime number should throw exception")
   void noSlotNumberShouldReturnException() {
 
-    assertThatThrownBy(
-            () ->
-                bookingService.save(
-                    Booking.builder()
-                        .id(1L)
-                        .userId(1L)
-                        .roomNumber("C01")
-                        .startDateTime(null)
-                        .status(BOOKED_STATUS.getValue())
-                        .participants(new ArrayList<>())
-                        .build()))
+    assertThatThrownBy(() -> saveBooking("C01", null, 1L))
         .isInstanceOf(FunctionalException.class)
         .hasMessageContaining("startDatetime is mandatory");
+  }
+
+  private Booking saveBooking(String roomNumber, LocalDateTime startDateTime, Long userId)
+      throws FunctionalException {
+    return bookingService.save(buildBooking(1L, userId, roomNumber, startDateTime));
   }
 
   @Test
   @DisplayName("5) booking should be saved and return new created id")
   void bookingShouldBeSavedAndReturnNewId() throws FunctionalException {
-    Booking toCreate =
-        Booking.builder()
-            .id(null)
-            .userId(1L)
-            .roomNumber("C01")
-            .startDateTime(JANUARY_FIRST_EIGHT_AM)
-            .status(BOOKED_STATUS.getValue())
-            .participants(new ArrayList<>())
-            .build();
+    Booking toCreate = buildBooking(null, 1L, "C01", JANUARY_FIRST_EIGHT_AM);
 
-    Booking created =
-        Booking.builder()
-            .id(1L)
-            .userId(1L)
-            .roomNumber("C01")
-            .startDateTime(JANUARY_FIRST_EIGHT_AM)
-            .status(BOOKED_STATUS.getValue())
-            .participants(new ArrayList<>())
-            .build();
+    Booking created = buildBooking(1L, 1L, "C01", JANUARY_FIRST_EIGHT_AM);
+
     when(bookingStore.save(toCreate)).thenReturn(created);
 
     Booking result = bookingService.save(toCreate);
@@ -136,29 +96,33 @@ public class BookingServiceTest {
   @DisplayName("6) cancel booking should cancel the booking and free the slot")
   void cancelBookingShouldCancelAndFreeTheSlot() throws FunctionalException, NotFoundException {
 
-    Booking booking =
-        Booking.builder()
-            .id(1L)
-            .userId(1L)
-            .roomNumber("C01")
-            .startDateTime(JANUARY_FIRST_EIGHT_AM)
-            .status(BOOKED_STATUS.getValue())
-            .participants(new ArrayList<>())
-            .build();
+    Booking booking = buildBooking(1L, 1L, "C01", JANUARY_FIRST_EIGHT_AM);
+
     when(bookingStore.findById(booking.getId())).thenReturn(booking);
     doNothing()
         .when(bookingStore)
         .sendNotificationEvent(
-            BookingEvent.builder().booking(booking).type("create").build());
+            BookingEvent.builder().booking(booking).type(CREATE.getValue()).build());
 
     bookingService.cancel(booking.getId());
     verify(bookingStore, times(1)).cancel(booking);
     verify(bookingStore, times(1))
-        .sendNotificationEvent(
-            BookingEvent.builder().booking(booking).type("cancel").build());
+        .sendNotificationEvent(BookingEvent.builder().booking(booking).type("cancel").build());
   }
 
   static Stream<String> blankOrNullStrings() {
     return Stream.of("", " ", null);
+  }
+
+  private Booking buildBooking(
+      Long id, Long userId, String roomNumber, LocalDateTime startDateTime) {
+    return Booking.builder()
+        .id(id)
+        .userId(userId)
+        .roomNumber(roomNumber)
+        .startDateTime(startDateTime)
+        .status(BOOKED_STATUS.getValue())
+        .participants(new ArrayList<>())
+        .build();
   }
 }

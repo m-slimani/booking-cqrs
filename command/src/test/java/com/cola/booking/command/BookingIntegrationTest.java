@@ -1,12 +1,12 @@
 package com.cola.booking.command;
 
+import static com.cola.booking.command.DatesUtils.JANUARY_FIRST_EIGHT_AM;
+
 import com.cola.booking.command.application.model.BookingR;
 import com.cola.booking.command.domain.BookingStatusEnum;
 import com.cola.booking.command.infrastructure.booking.BookingEntity;
 import com.cola.booking.command.infrastructure.booking.BookingRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,9 +26,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 public class BookingIntegrationTest {
-
-  private static final LocalDateTime JANUARY_FIRST_EIGHT_AM = LocalDateTime.of(2022, 1, 1, 8, 0, 0);
-
 
   @Autowired
   private MockMvc mockMvc;
@@ -103,7 +100,7 @@ public class BookingIntegrationTest {
     Assertions.assertThat(response.getUserId()).isEqualTo(1);
     Assertions.assertThat(response.getRoomNumber()).isEqualTo("C01");
     Assertions.assertThat(response.getStartDateTime()).isEqualTo("2022-01-01T08:00:00");
-    Assertions.assertThat(response.getParticipants()).isEqualTo(Arrays.asList("John", "Marc"));
+    Assertions.assertThat(response.getParticipants()).isEqualTo("John,Marc");
     Assertions.assertThat(response.getStatus()).isEqualTo(BookingStatusEnum.BOOKED_STATUS.getValue());
   }
 
@@ -127,7 +124,7 @@ public class BookingIntegrationTest {
     bookingR.setUserId(1);
     bookingR.setRoomNumber("C01");
     bookingR.setStartDateTime("2022-01-01T08:00:00");
-    bookingR.setParticipants(Arrays.asList("John", "Marc"));
+    bookingR.setParticipants("John,Marc");
     return bookingR;
   }
 }

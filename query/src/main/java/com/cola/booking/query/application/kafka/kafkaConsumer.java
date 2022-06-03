@@ -1,5 +1,6 @@
 package com.cola.booking.query.application.kafka;
 
+import static com.cola.booking.query.application.kafka.EventTypeEnum.CREATE;
 import static com.cola.booking.query.domain.AvailabilityStatusEnum.BOOKED;
 
 import com.cola.booking.query.domain.AvailabilityStatusEnum;
@@ -47,7 +48,7 @@ public class kafkaConsumer {
         .roomNumber(record.getRoomNumber())
         .startDateTime(record.getStartDateTime())
         .status(
-            "create".equals(type)
+            CREATE.getValue().equals(type)
                 ? BOOKED.getValue()
                 : AvailabilityStatusEnum.FREE.getValue())
         .participants(String.join(",", record.getParticipants()))

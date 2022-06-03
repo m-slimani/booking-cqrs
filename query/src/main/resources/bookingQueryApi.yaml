@@ -88,14 +88,16 @@ components:
           type: integer
         userId:
           type: integer
+        roomNumber:
+          type: string
+        startDateTime:
+          type: string
+        status:
+          type: string
         participants:
           type: array
           items:
             type: string
-        roomNumber:
-          type: string
-        status:
-          type: string
     BookingArrayR:
       type: array
       items:

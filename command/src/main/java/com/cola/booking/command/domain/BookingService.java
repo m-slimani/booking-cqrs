@@ -1,5 +1,7 @@
 package com.cola.booking.command.domain;
 
+import static com.cola.booking.command.domain.event.EventTypeEnum.CREATE;
+
 import com.cola.booking.command.domain.event.BookingEvent;
 import com.cola.booking.command.infrastructure.booking.BookingStore;
 import java.util.List;
@@ -20,6 +22,24 @@ public class BookingService {
 
   @Transactional
   public Booking save(Booking booking) throws FunctionalException {
+
+    checkInputs(booking);
+
+    List<Booking> existing =
+        bookingStore.findBookings(booking.getRoomNumber(), booking.getStartDateTime());
+
+    if (existing.isEmpty()) {
+      Booking created = bookingStore.save(booking);
+      bookingStore.sendNotificationEvent(
+          BookingEvent.builder().booking(created).type(CREATE.getValue()).build());
+      return created;
+    } else {
+      throw new FunctionalException(String.format("This room: [%s], and date: [%s] is already booked", booking.getRoomNumber(),
+          booking.getStartDateTime().toString()));
+    }
+  }
+
+  private void checkInputs(Booking booking) throws FunctionalException {
     if (Objects.isNull(booking)) {
       throw new FunctionalException("booking is mandatory");
     }
@@ -31,17 +51,6 @@ public class BookingService {
     }
     if (Objects.isNull(booking.getStartDateTime())) {
       throw new FunctionalException("startDatetime is mandatory");
-    }
-    List<Booking> existing =
-        bookingStore.findBookings(booking.getRoomNumber(), booking.getStartDateTime());
-
-    if (existing.isEmpty()) {
-      Booking created = bookingStore.save(booking);
-      bookingStore.sendNotificationEvent(
-          BookingEvent.builder().booking(created).type("create").build());
-      return created;
-    } else {
-      throw new FunctionalException("Slot already booked");
     }
   }
 

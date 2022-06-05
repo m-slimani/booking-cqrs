@@ -14,7 +14,7 @@ info:
 tags:
   - name: slots
     description: Access to slots
-  - name: user
+  - name: users
     description: Operations about user
     externalDocs:
       description: Find out more about our store
@@ -52,7 +52,7 @@ paths:
   /users/{userId}/bookings:
     get:
       tags:
-        - user
+        - users
       summary: Get user bookings
       description: This can only be done by the logged in user.
       operationId: getBookingsByUserId

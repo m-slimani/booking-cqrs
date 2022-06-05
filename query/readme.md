@@ -9,6 +9,8 @@ Code source is generated in api and model packages :
 `com.cola.booking.query.application.api`
 `com.cola.booking.query.application.model`
 
+swagger-ui => http://localhost:8082/swagger-ui/index.html
+
 ## 1.2 Kafka Listener
 Kafka consumer allow subscribing th kafka topic and listen to notification arriving
 

@@ -35,5 +35,5 @@ The following parameters are used to initialize the rooms and the opening slots
 * `opening.duration`=60 => slot duration in minutes
 * `room.names`=C01,P01  => the liste of room names, separated by comma 
 
----------------
-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
+----- GITHUB KEY---------------
+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
